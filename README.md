@@ -1,4 +1,4 @@
-# **Teste na Plataforma de Hospedagem, Testes e Produção de Aplicações Web**
+# **Teste na Heroku, uma Plataforma de Hospedagem, Testes e Produção de Aplicações Web**
 
 Esse teste foi feito com a primeira versão do Projeto Series Temporais desenvolvido por:
 
