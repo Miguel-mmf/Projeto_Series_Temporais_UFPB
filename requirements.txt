@@ -21,7 +21,6 @@ Jinja2==2.11.2
 jupyter-client==6.1.7
 jupyter-core==4.6.3
 MarkupSafe==1.1.1
-mkl-random==1.1.1
 mkl-service==2.3.0
 numpy @ file:///C:/ci/numpy_and_numpy_base_1603466732592/work
 pandas @ file:///C:/ci/pandas_1602083338010/work
