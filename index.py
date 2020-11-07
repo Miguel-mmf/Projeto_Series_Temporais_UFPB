@@ -1,93 +1,141 @@
-# Lembrete: 
-# Para gerar o arquivo environment.yml, use o comando:
-# conda env export > environment.yml
-# com venvst ativado.
-
-# Usei instruções desse site:
-# https://elements.heroku.com/buildpacks/conda/conda-buildpack
-# para adicionar um buildpack de python-conda. A URL é
-# https://github.com/conda/conda-buildpack.git
-# Forneci essa url no dashboard do projeto, aba settings.
-
-# Tentei com o buildpack, mas deu erro:
-#
-# -----> Python/Conda app detected
-# -----> Preparing Python/Miniconda Environment (3.8.3)
-# /tmp/codon/tmp/buildpacks/298b2b29cc393b8d85322805d763db20318c981c/bin/steps/conda_compile: line 9: conda: command not found
-#  !     Push rejected, failed to compile Python/Conda app.
-#  !     Push failed
-#
-# Coloquei o buildpack de python e adicionei novamente o requirements.txt.
-#
-#        Collecting MarkupSafe==1.1.1
-#          Downloading MarkupSafe-1.1.1-cp36-cp36m-manylinux1_x86_64.whl (27 kB)
-#        ERROR: Could not find a version that satisfies the requirement mkl-fft==1.1.0 (from -r /tmp/build_644933f8_/requirements.txt (line 17)) (from versions: 1.0.0.17, 1.0.2, 1.0.6)
-#        ERROR: No matching distribution found for mkl-fft==1.1.0 (from -r /tmp/build_644933f8_/requirements.txt (line 17))
-#  !     Push rejected, failed to compile Python app.
-#  !     Push failed
-
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
+from app import server
 from apps import app_descricao_v01
 from apps import app_dashboard_v01
+from apps import apoio_layout
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                              Rotinas de Apoio
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def gera_layout():
 
-    return html.Div([
+    return html.Div(
+        [
+            # header
+            html.Div(
+                [
+                    html.H1(
+                        'Laboratório de Séries Temporais',
+                        className='title_style'
+                    ),
 
-        html.H1('Laboratório de Séries Temporais', className='title_style'),
-        html.P('Página Principal - DEE/CEAR/UFPB', className='title_style'),
+                    html.H6(
+                        'Página Principal - DEE/CEAR/UFPB',
+                        className='title_style'
+                    ),
+                ],
+                className='wind__speed__container',
+                style={'height':'120px'}
+            ),
 
-        html.Hr(className='hr'),
-
-        html.P('Versão 0.1 - junho/julho 2020', className='subtitle_style'),
+            html.Div(
+                [
+                    html.P(
+                        'Versão 0.1 - junho/julho 2020',
+                        className='title_style',
+                        style={'margin-top':'10px'}
+                    ),
         
-        html.Div([
+                    html.Div(
+                        [
+                            html.Label(
+                                'Para acessar a página Descrição, selecione o botão abaixo:',
+                                className='descricao_index_style'
+                            ),
 
-            dcc.Link('Descrição',
-                href='/apps/v01/descricao',
-                className='button button_link_style',
-            )
-        ]),
+                            dcc.Link('Descrição',
+                                href='/apps/v01/descricao',
+                                className='button button_link_style',
+                            )
+                        ],
+                        className='one-half column',
+                    ),
 
-        html.Div([
+                    html.Div(
+                        [
+                            html.Label(
+                                'Para acessar a página Dashboard, selecione o botão abaixo:',
+                                className='descricao_index_style'
+                            ),
 
-            dcc.Link('Dashboard',
-                href='/apps/v01/dashboard',
-                className='button button_link_style',
-            )
-        ]),
-
-        html.Hr(className='hr'),
+                            dcc.Link('Dashboard',
+                                href='/apps/v01/dashboard',
+                                className='button button_link_style',
+                            )
+                        ],
+                        className='one-half column',
+                    ),
+                ],
+                className='wind__speed__container',
+                style={'height':'275px'}
+            ),
         
-    ],style={
-        'margin-left':'15px',
-        'margin-right':'15px'
-    })
+            # logos (CEAR e UFPB)
+            html.Div(
+                [
+                    html.Div(
+                        [
+                            html.Img(
+                                src= app.get_asset_url('image/logo_cear.png'),
+                                title='Centro de Energias Alternativas e Renováveis (CEAR)',
+                                alt='Centro de Energias Alternativas e Renováveis (CEAR)',
+                                className='cear_ufpb',
+                            )
+                        ],
+                        className='six columns box_cear_ufpb',
+                    ),
 
-# Inicializa a variável server (foi necessária para heroku funcionar)
-server = app.server
+                    html.Div(
+                        [
+                            html.Img(
+                                src= app.get_asset_url('image/logo_ufpb.png'),
+                                title='Universidade Federal da Paraíba (UFPB)',
+                                alt='Universidade Federal da Paraíba (UFPB)',
+                                className='cear_ufpb',
+                            )
+                        ],
+                        className='six columns box_cear_ufpb',
+                    ),
+                ],
+                style={'height':'225px'}
+            ),
 
-app.layout = html.Div([
-    dcc.Location(
-        id='url',
-        refresh=False
-    ),
-    html.Div(
-        id='page-content',
-        children=gera_layout()
-    ),
-])
+            # Rodapé
+            apoio_layout.gera_rodape(),
+        ]
+    )
 
-# Callbacks
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                       Fim das Rotinas de Apoio
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# ++++++++++++++++ LAYOUT  ++++++++++++++++
+
+app.layout = html.Div(
+    [
+        dcc.Location(
+            id='url',
+            refresh=False
+        ),
+
+        html.Div(
+            children = gera_layout(),
+            id='page-content',
+        ),
+    ]
+)
+
+# ++++++++++++++++ CALLBACKS  ++++++++++++++++
 
 @app.callback(
     Output('page-content', 'children'),
     [
-        Input('url', 'pathname')
+        Input('url', 'pathname'),
     ]
 )
 def display_page(pathname):
@@ -102,4 +150,4 @@ def display_page(pathname):
         return '404'
 
 if __name__ == '__main__':
-    app.run_server(debug=False)
+    app.run_server(debug=True)

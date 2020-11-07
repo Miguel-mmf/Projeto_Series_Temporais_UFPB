@@ -11,6 +11,8 @@ from app import app
 from apps import dashboard_infor_v01 as infor
 from apps import dashboard_table_v01 as table
 from apps import dashboard_graph_v01 as graph
+from apps import apoio_layout
+
 
 if 'app_dashboard_v01' not in app.dict_apps:
     app.dict_apps['app_dashboard_v01'] = {
@@ -20,65 +22,89 @@ if 'app_dashboard_v01' not in app.dict_apps:
         'user_data_graph': graph.init_user_data(),
     }
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                              Rotinas de Apoio
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 def gera_layout():
     
-    return html.Div([
-
-        dcc.Markdown('''
-        # **Dashboard v01**
-
-        ***
-
-        ##### **Visualização de Dados**
-
-        Após inserir o arquivo, é possível manipular as opções que surgirão abaixo e visualizar os dados inseridos por meio da descrição deles, da organização em tabela e da construção de gráficos.
-        '''),
-
-        dcc.Upload(
-            id='upload-data',
-            className='upload_box_style',
-            children=html.Div(
+    return html.Div(
+        [
+            # header
+            html.Div(
                 [
-                    'Arraste e solte ou ', html.A('Escolha um arquivo...')
-                ]
+                    html.H1(
+                        'Dashboard',
+                        className='title_style'
+                    ),
+
+                    html.H6(
+                        'DEE/CEAR/UFPB',
+                        className='title_style'
+                    ),
+                ],
+                className='wind__speed__container',
+                style={'height':'120px'}
             ),
-        ),
-        html.Hr(className='hr'),
-        
-        html.Div(id='output-data'),
 
-        html.H5(
-            ['Selecione a forma que você deseja visualizar o conteúdo do arquivo !'],
-            style={'textAlign':'center','fontWeight': 'bold'}
-        ),
+            html.Div(
+                [
+                    dcc.Markdown('''
 
-        html.Hr(className='hr'),
+                        ##### **Visualização de Dados**
 
-        dcc.Tabs(
-            id="tabs",
-            # value='tab-1',
-            # Esse value = 'tab-1' é default do componente.
-            children=[
-                dcc.Tab(label='Informações', value='info-val',className='tab_hearder_style'),
-                dcc.Tab(label='Tabela', value='tabela-val',className='tab_hearder_style'),
-                dcc.Tab(label='Gráficos', value='grafico-val',className='tab_hearder_style'),
-            ],
-        ),
-        html.Div(id='tabs-content'),
+                        Após inserir o arquivo, é possível manipular as opções que surgirão abaixo e visualizar os dados inseridos por meio da descrição deles, da organização em tabela e da construção de gráficos.
+                        ''',
+                        style={'margin-left':'20px','margin-right':'20px'}
+                    ),
 
-        html.Hr(className='hr'),
+                    dcc.Upload(
+                        id='upload-data',
+                        className='upload_box_style',
+                        children=html.Div(
+                            [
+                                'Arraste e solte ou ', html.A('Escolha um arquivo...')
+                            ]
+                        ),
+                    ),
 
-        html.Div(
-            [
-                'Retornar para ',dcc.Link('página principal', href='/')
-            ],
-            style={'margin-left':'560px'}
-        )
+                    html.Div(
+                        id='output-data',
+                        style={'margin-top':'20px','margin-left':'20px','margin-right':'20px'}
+                    ),
 
-    ],style={
-        'margin-left':'15px',
-        'margin-right':'15px'
-    })
+                    html.H5(
+                        ['Selecione a forma que você deseja visualizar o conteúdo do arquivo !'],
+                        style={'textAlign':'center','margin-top':'20px','margin-left':'20px','margin-right':'20px'}
+                    ),
+                ],
+                className='wind__speed__container',
+                style={'height':'330px'}
+            ),
+
+            dcc.Tabs(
+                id="tabs",
+                # value='tab-1',
+                # Esse value = 'tab-1' é default do componente.
+                children=[
+                    dcc.Tab(label='Informações', value='info-val',className='tab_hearder_style'),
+                    dcc.Tab(label='Tabela', value='tabela-val',className='tab_hearder_style'),
+                    dcc.Tab(label='Gráficos', value='grafico-val',className='tab_hearder_style'),
+                ],
+            ),
+
+            html.Div(id='tabs-content'),
+
+            # retornar para a página principal
+            html.Div(
+                apoio_layout.gera_button_return()
+            ),
+
+            # Rodapé
+            apoio_layout.gera_rodape(),
+
+        ],
+    )
 
 def index_description(df):
 
@@ -128,9 +154,11 @@ def parse_contents(contents, filename, date):
             html.H6('O arquivo {} está pronto para ser visualizado !'.format(filename))
         ])
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                       Fim das Rotinas de Apoio
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Callbacks
-
+# ++++++++++++++++ CALLBACKS  ++++++++++++++++
 
 @app.callback(
     Output('output-data', 'children'),
@@ -169,7 +197,13 @@ def update_output(content, name, date):
         if name is not app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['filename']:
             app.dict_apps['app_dashboard_v01']['user_data_graph'] = graph.init_user_data()
 
-        children = [parse_contents(content, name, date)]
+        children = [
+            parse_contents(
+                content,
+                name,
+                date
+            )
+        ]
         
     return children
 
@@ -185,16 +219,40 @@ def update_tabs_content(tab):
     # Atualiza o conteúdo do componente tabs, de acordo com os cliques do usuário.
 
     if(app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['test'] is None):
-        return html.Div([],style={'height':'100px'})
+        return html.Div(
+            [],
+            style={'height':'100px'}
+        )
 
     # tab-1 é o valor default do componente. Nesse caso, retorna vazio!
     if tab == 'tab-1':
-        return html.Div([],style={'height':'100px'})
+        return html.Div(
+            [],
+            style={'height':'100px'}
+        )
     elif tab == 'info-val':
-        return html.Div([infor.gera_layout()])
+        return html.Div(
+            [
+                infor.gera_layout()
+            ],
+            className='wind__speed__container',
+            style={'margin-top':'0px'}
+        )
     elif tab == 'tabela-val':
-        return html.Div([table.gera_layout()])
+        return html.Div(
+            [
+                table.gera_layout()
+            ],
+            className='wind__speed__container',
+            style={'margin-top':'0px'}
+        )
     elif tab == 'grafico-val':
-        return html.Div([graph.gera_layout()])
+        return html.Div(
+            [
+                graph.gera_layout()
+            ],
+            className='wind__speed__container',
+            style={'margin-top':'0px'}
+        )
     else:
         return html.Div(f'(update_tabs_content) Valor de tab inesperado (tab = {tab})!')

@@ -1,8 +1,9 @@
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table
 
+import dash_table
 from dash_table.Format import Format, Scheme, Sign, Symbol
+
 from app import app
 
 def init_user_data():
@@ -16,13 +17,17 @@ def init_user_data():
         'info_df': None,
     }
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                       Rotinas de Apoio
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 def gera_infor():
 
     df = app.dict_apps['app_dashboard_v01']['user_data_infor']['infor_df']
 
-    return html.Div([
-
-        dash_table.DataTable(
+    return html.Div(
+        [
+            dash_table.DataTable(
             
                 data = df.to_dict('records'),
 
@@ -43,19 +48,28 @@ def gera_infor():
                     'width':'125px',
                     'maxWidth':'160px',
                     'fontSize':'14',
-                    'font-family':'sans-serif'
+                    'color':'#c1ce13',
+                    'font-family':'sans-serif',
+                    'backgroundColor':'#061E44',
                     },
                 
                 style_header={
-                    'backgroundColor': '#ADD8E6',
+                    'backgroundColor':'#c1ce13',
+                    'color':'#061E44',
                     'fontWeight': 'bold'
                 },
 
                 # Anexando a coluna com o título de cada linha, faz mais sentido deixar a primeira coluna fixa.
-                fixed_columns={'headers': True,
-                            'data': 1},
+                fixed_columns={
+                    'headers': True,
+                    'data': 1
+                },
 
-                style_table={'height':'100%','minWidth': '100%','overflowX': 'auto'}
+                style_table={
+                    'height':'100%',
+                    'minWidth': '100%',
+                    'overflowX': 'auto'
+                }
             )
         ],
         style={'margin-left':'15px'}
@@ -65,53 +79,59 @@ def gera_layout():
 
     if app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['test'] == 'inserted':
         
-        return html.Div([
-
-            html.H2(
-                ['Informações do Arquivo'], className='title_style',
-            ),
-
-            html.Hr(className='hr'),
-            
-            html.H4(
-                ['Informações Gerais do Arquivo'], className='subtitle_style',
-            ),
-
-            dcc.Markdown(
-                '###### **Nome do Arquivo:** {0}\n ###### **Tipo do Arquivo:** {1}\n ###### **Última Modificação:** {2}\n' 
-                .format(
-                    app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['filename'],
-                    app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['filename_type'],
-                    app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['last_modified']
+        return html.Div(
+            [
+                html.H2(
+                    ['Informações do Arquivo'],
+                    className='title_style',
                 ),
-                style={'margin-left':'15px'}
-            ),
-            
-            html.Hr(className='hr'),
 
-            html.H4(
-                ['Informações Específicas do Arquivo'], className='subtitle_style',
-            ),
+                html.Hr(className='hr'),
+                
+                html.H4(
+                    ['Informações Gerais do Arquivo'], className='subtitle_style',
+                ),
 
-            html.H6(
-                ['Medidas de Tendência Central dos Dados:'], style={'font-weight': 'bold','margin-left':'15px'}
-            ),
-
-            gera_infor(),
-
-            dcc.Markdown(
-                '###### **Quantidade de Series:** {0}\n'
-                .format(
-                    str(
-                        len(app.dict_apps['app_dashboard_v01']['series_df'].keys())
+                dcc.Markdown(
+                    '###### **Nome do Arquivo:** {0}\n ###### **Tipo do Arquivo:** {1}\n ###### **Última Modificação:** {2}\n' 
+                    .format(
+                        app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['filename'],
+                        app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['filename_type'],
+                        app.dict_apps['app_dashboard_v01']['user_data_infor']['file']['last_modified']
                     ),
+                    style={'margin-left':'15px'}
                 ),
-                style={'margin-left':'15px'}
-            ),         
+                
+                html.Br(),
 
-        ])
+                html.H4(
+                    ['Informações Específicas do Arquivo'], className='subtitle_style',
+                ),
+
+                html.H6(
+                    ['Medidas de Tendência Central dos Dados:'], style={'font-weight': 'bold','margin-left':'15px'}
+                ),
+
+                gera_infor(),
+
+                dcc.Markdown(
+                    '###### **Quantidade de Series:** {0}\n'
+                    .format(
+                        str(
+                            len(app.dict_apps['app_dashboard_v01']['series_df'].keys())
+                        ),
+                    ),
+                    style={'margin-left':'15px'}
+                ),         
+            ],
+            style={'margin-left':'20px','margin-right':'20px'}
+        )
 
     else:
         return html.Div([])
 
-# Callbacks
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                       Fim das Rotinas de Apoio
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# ++++++++++++++++ CALLBACKS  ++++++++++++++++
