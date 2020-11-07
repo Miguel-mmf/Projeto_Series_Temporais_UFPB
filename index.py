@@ -3,7 +3,6 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from app import server
 from apps import app_descricao_v01
 from apps import app_dashboard_v01
 from apps import apoio_layout
@@ -114,6 +113,9 @@ def gera_layout():
 #                       Fim das Rotinas de Apoio
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+# Inicializa a variável server (é necessário para o heroku funcionar)
+server = app.server
+
 # ++++++++++++++++ LAYOUT  ++++++++++++++++
 
 app.layout = html.Div(
@@ -150,4 +152,6 @@ def display_page(pathname):
         return '404'
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(
+                debug=False
+            )
