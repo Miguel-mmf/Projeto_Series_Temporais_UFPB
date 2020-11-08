@@ -10,8 +10,9 @@ dash-renderer==1.8.3
 dash-table==4.11.0
 decorator==4.4.2
 Flask==1.1.2
-Flask-Compress==1.5.0
+Flask-Compress==1.8.0
 future==0.18.2
+gunicorn==20.0.4
 ipykernel==5.3.4
 ipython==7.18.1
 ipython-genutils==0.2.0
@@ -21,12 +22,11 @@ Jinja2==2.11.2
 jupyter-client==6.1.7
 jupyter-core==4.6.3
 MarkupSafe==1.1.1
-nbformat==4.2.0
-numpy==1.19.1
-pandas==1.1.0
+numpy==1.19.3
+pandas==1.1.4
 parso==0.7.1
 pickleshare==0.7.5
-plotly==4.9.0
+plotly==4.12.0
 prompt-toolkit==3.0.7
 Pygments==2.6.1
 python-dateutil==2.8.1
